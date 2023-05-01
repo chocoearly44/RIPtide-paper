@@ -7,6 +7,30 @@
 \usepackage[slovene]{babel}
 \usepackage[font=]{caption}
 
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
 \newdateformat{MMYYYYdate}{\monthname[\THEMONTH] \THEYEAR}
 \title{RIPtide - Univerzalno orodje za konfiguracijo omrežij}
 \author{Jurij Fortuna, G 3. a}
@@ -34,21 +58,19 @@
 
 % Povzetek
 \section*{Povzetek}
-Seminarska naloga opisuje matematični vidik delovanja cyclic redundancy
-check-a, ob tem pa na kratko opiše tudi matematične pojme, kot so konča
-polja in polinomi. Pokaže tudi, kako CRC implementirati z
-logičnim vezjem.\\\\
-\textbf{Ključe besede:} CRC, končna polja, polinomi, logična vezja, digitalna
-komunikacija\\
+V tej seminarski nalogi je opisana programska oprema RIPtide. Je odprtokodna
+in omogoča komurkoli, da s pomočjo RIPtide APIja ustvari podporo za svojo
+omrežno opremo ali uporablja že napisano.\\\\
+\textbf{Ključe besede:} omrežna oprema, API, Java, vtičniki, odptokodna
+programska oprema\\
 
 \section*{Abstract}
 \foreignlanguage{english}{
-	This paper describes mathematical part of cyclic
-	redundancy check, while at the same time depicts mathematical terms like finite
-	fields and polynomials. The paper shows how to implement CRC with logic circuit.\\
-	\\
-	\textbf{Keywords:} CRC, finite fields, polynomials, logic circuits, digital
-	communication
+	This seminar task describes the RIPtide software. It is open-source
+	and allows anyone to create support for their network equipment or
+	use what has already been written, using the RIPtide API.\\\\
+	\textbf{Keywords:} network equipment, API, Java, plugins, open source
+	software
 }
 \newpage
 
@@ -79,24 +101,66 @@ datotek. Sam RIPtide je zgrajen iz dveh glavnih delov: osprednega dela
 in aplikacijskega programskega vmesnika (v nadaljevanju API).
 Poleg tega velja omeniti Shede, ki jih lahko razvije kdorkoli z uporabo
 RIPtide API-ja.
+\newpage
 
-\subsection{Ospredni del}
-Ospredni del je odgovoren za konfiguracijo RIPtide-a, nalaganje Shedov
-in rokovanje z uporabnikovimi napravami ter pripadajočimi poverilnicami.
+% 3. Ospredni del
+\section{Ospredni del}
+Ospredni del je odgovoren za konfiguracijo RIPtide-a, rokovanje z 
+uporabnikovimi napravami ter pripadajočimi poverilnicami in za
+nalaganje Shedov.
 
-\subsubsection{Konfiguracija}
+\subsection{Konfiguracija}
 Uporabnik lahko svoje naprave shrani, in si s tem prihrani čas za morebitno
 kasnejšo konfiguracijo. Poleg tega RIPtide omogoča spremembo barve vmesnika
-po svoji želji.
+po uporabnikovi želji.
 
-\subsubsection{Nalaganje Shedov}
+\subsubsection{Shranjevanje podatkov}
+Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
+imenovanem Workspace.
 
-\subsubsection{Upravljanje poverilnic}
+\begin{lstlisting}
+@Data
+public class Workspace implements Serializable {
+	private Theme theme;
+	private ArrayList<Credential> credentials;
+	private ArrayList<Connection> connections;
+
+	public Workspace() {
+		theme = Theme.PRIMER_DARK;
+		credentials = new ArrayList<>();
+		connections = new ArrayList<>();
+	}
+
+	public Workspace(Theme theme, ArrayList<Credential> credentials, ArrayList<Connection> connections) {
+		this.theme = theme;
+		this.credentials = credentials;
+		this.connections = connections;
+	}
+}
+\end{lstlisting}
+Ko uporabnik nastavitve shrani je objekt serializiran in zapisan v datoteko
+na uproabnikov sistem. Datotek je lahko več, kar omogoča prilagoditev
+vmesnika za različna okolja (npr. posebej za domačo in poslovno rabo).
+Workspace datoteke so shranjene v JSON formatu, kar uporabnikom omogoča
+enostavno izmenjavo ali prenos.
+
+\subsubsection{Barve vmesnika}
+Uporabnik lahko vmesnik prilagodi na štiri priložene teme. V prihodnosti
+bo mogoče nalaganje barv iz CSS datoteke po meri.
+
+\subsection{Upravljanje poverilnic in naprav}
 Za konfiguracijo večine omrežnih naprav je potrebna avtorizacija.
 RIPtide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
-sistemskem keyringu (sistem za varno hranjenje gesel). Poverilnice so ob
-povezavi na napravo prek API-ja podani Shedu, kar pomeni, da se razvijalci
-teh ne rabijo ukvarjati z varnim hranjenjem poverilnic.
+sistemskem keyringu. Poverilnice so ob povezavi na napravo prek API-ja
+podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
+varnim hranjenjem poverilnic. Več o rokovanju z napravami v razdelku
+\ref{api}. 
+
+\subsection{Nalaganje Shedov}
+\newpage
+
+% 3. Aplikacijski programski vmesnik
+\section{Aplikacijski programski vmesnik} \label{api}
 \newpage
 
 \end{document}
