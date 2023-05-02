@@ -116,7 +116,7 @@ po uporabnikovi želji.
 
 \subsubsection{Shranjevanje podatkov}
 Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
-imenovanem Workspace.
+imenovanem \verb|Workspace|.
 
 \begin{lstlisting}
 @Data
@@ -154,13 +154,26 @@ RIPtide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
 sistemskem keyringu. Poverilnice so ob povezavi na napravo prek API-ja
 podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
 varnim hranjenjem poverilnic. Več o rokovanju z napravami v razdelku
-\ref{api}. 
+\ref{api}.
 
 \subsection{Nalaganje Shedov}
+Nalaganje shedov poteka v treh korakih, lociranje Sheda, branje
+metapodatkov in vzspostavljanje povezave z napravo. Na uporabnikovem
+sistemu se nahajajo v obliki JAR datotek v dveh mapah,
+\verb|~/.config/RIPtide/sheds| na NIX sistemih in \verb|NEKJE|
+na Windows sistemih.
+\\\\
+Ob izbiri naprave, RIPtide najprej prebere njen t.i. model path, ki
+izgleda približno tako: \verb|telekomslovenije.innboxg78.ts|. Niz je
+sestavljen iz ID-ja Sheda, ID-ja modela nprave in ID-ja različice
+modela. Vsi ID-ji so edinstveni, kar pomeni, da lahko program
+najde Shed, v njem poišče model naprave, njegovo različico in
+vzpostavi povezavo z napravo prek API-ja.
 \newpage
 
 % 3. Aplikacijski programski vmesnik
 \section{Aplikacijski programski vmesnik} \label{api}
+RIPtide ima 
 \newpage
 
 \end{document}
