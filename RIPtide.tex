@@ -160,8 +160,8 @@ varnim hranjenjem poverilnic. Več o rokovanju z napravami v razdelku
 Nalaganje shedov poteka v treh korakih, lociranje Sheda, branje
 metapodatkov in vzspostavljanje povezave z napravo. Na uporabnikovem
 sistemu se nahajajo v obliki JAR datotek v dveh mapah,
-\verb|~/.config/RIPtide/sheds| na NIX sistemih in \verb|NEKJE|
-na Windows sistemih.
+\verb|~/.config/RIPtide/sheds| na NIX sistemih in
+\verb|%UserProfile%/.RIPtide/sheds| na Windows sistemih.
 \\\\
 Ob izbiri naprave, RIPtide najprej prebere njen t.i. model path, ki
 izgleda približno tako: \verb|telekomslovenije.innboxg78.ts|. Niz je
@@ -171,16 +171,39 @@ najde Shed, v njem poišče model naprave, njegovo različico in
 vzpostavi povezavo z napravo prek API-ja.
 \newpage
 
-% 3. Aplikacijski programski vmesnik
+% 4. Aplikacijski programski vmesnik
 \section{Aplikacijski programski vmesnik} \label{api}
 RIPtide API omogoča uporabnikom, da ustvarijo lastno podporo za omrežno
 opremo, ki je programska oprema še ne podpira. To pomeni, da lahko
 skrbniki omrežij enostavno integrirajo nove naprave v svoje omrežje, ne da
-bi morali čakati, da prodajalec izda uradno podporo. Poleg tega API
-uporabnikom omogoča avtomatizacijo nalog, ki so specifične za njihovo
-organizacijo ali okolje, kar lahko še poveča učinkovitost in produktivnost.
+bi morali čakati, da prodajalec izda uradno podporo.
 
+\subsection{Struktura}
+Vsi pomembni vmesniki in razredi za pisanje Shedov se nahajajo v
+paketu org.riptide.sdk.sheds. ergaergaergaergaerg
+\subsection{Komunikacija z napravami}
+aergaergaergaetrhaerh
+\newpage
 
+% 5. Shedi
+\section{Shedi}
+V prihodnosti načrtujem omogočiti razširitev tudi drugih funkcionalnosti.
+Zaradi tega sem se za poimenovanje vtičnikov naprav odločil uporabiti
+izraz "shedi" namesto običajnega izraza "plugin".
+
+\subsection{Projektna struktura}
+\subsection{Metapodatki}
+\subsection{}
+\newpage
+
+% 6. Eksperimentalne funkcije
+\section{Eksperimentalne funkcije}
+RIPtide je opremljen z nekaj novimi eksperimentalnimi funkcijami,
+ki pa jih zaradi pomanjkanja časa nisem uspel povsem dokončati in
+stestirati. Te omogočajo naprednim uporabnikom nove možnosti avtomacije
+in pregleda nad omrežjem.
+
+\subsection{Topološki pogled omrežja}
 \newpage
 
 \end{document}
