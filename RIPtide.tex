@@ -217,18 +217,18 @@ public interface Router extends Device {
 	PATWizard patWizard();
 }
 \end{lstlisting}
-Za tem se kliče metoda \verb|initialize/2|, ki
-gonilnemu objektu poda omrežni naslov naprave in poverilnice.
+Za tem se kliče metoda \verb|initialize/2|, ki gonilnemu objektu poda
+omrežni naslov naprave in poverilnice.
 \\\\
 Nato program od gonilnega objekta zahteva seznam konfiguracijskih strani
 in zavihke z metodo \verb |getPages/1|. Strani so predstavljene s tabelami
 \verb|Tab| objektov, ki so preslikane v nize. Shedi imajo običajno razrede,
-ki implementirajo vmesnik \verb|Tab|, te se instancirajo in vrnejo v
+ki implementirajo vmesnik \verb|Tab|, ti se instancirajo in vrnejo v
 metodi. Ospredni del nato z orodnim razredom \verb|ContentRenderer|
 generira stran, kot je prikazana spodaj.
 
 \begin{center}
-	\includegraphics[scale=0.3]{slike/config-window.png}
+	\includegraphics[scale=0.28]{slike/config-window.png}
 	\captionof{figure}{Primer generirane konfiguracijske strani}
 \end{center}
 \newpage
