@@ -215,6 +215,10 @@ public interface Router extends Device {
 }
 \end{lstlisting}
 
+Ob izbiri naprave se ustvari nov objekt, ki je odgovoren za
+komunikacijo z napravo (postopek je opisan v razdelku
+\ref{nalaganje-shedov}). Za tem se kliče metoda \verb|initialize|, ki
+shedu preda omrežni naslov naprave in poverilnice.
 
 \subsection{Čarovniki}
 \newpage
