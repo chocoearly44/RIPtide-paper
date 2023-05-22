@@ -96,7 +96,7 @@ opremo za konfiguracijo omrežij. Deluje na principu
 % 2. Tehnologije
 \section{Uporabljene tehnologije}
 Tako Shedi, kot tudi RIPtide so napisani v Javi. Java omogoča dinamično
-nalaganje modulov ob zagonu navideznega stroja, tudi iz zapakiranih jar
+nalaganje modulov ob zagonu navideznega stroja, tudi iz zapakiranih JAR
 datotek. Sam RIPtide je zgrajen iz dveh glavnih delov: osprednega dela 
 in aplikacijskega programskega vmesnika (v nadaljevanju API).
 Poleg tega velja omeniti Shede, ki jih lahko razvije kdorkoli z uporabo
@@ -154,14 +154,14 @@ RIPtide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
 sistemskem keyringu. Poverilnice so ob povezavi na napravo prek API-ja
 podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
 varnim hranjenjem poverilnic. Več o rokovanju z napravami v razdelku
-\ref{api}.
+\ref{komunikacija-z-napravami}.
 
-\subsection{Nalaganje Shedov}
+\subsection{Nalaganje Shedov} \label{nalaganje-shedov}
 Nalaganje shedov poteka v treh korakih, lociranje Sheda, branje
 metapodatkov in vzspostavljanje povezave z napravo. Na uporabnikovem
 sistemu se nahajajo v obliki JAR datotek v dveh mapah,
 \verb|~/.config/RIPtide/sheds| na NIX sistemih in
-\verb|%UserProfile%/.RIPtide/sheds| na Windows sistemih.
+\verb|%UserProfile%\.RIPtide\sheds| na Windows sistemih.
 \\\\
 Ob izbiri naprave, RIPtide najprej prebere njen t.i. model path, ki
 izgleda približno tako: \verb|telekomslovenije.innboxg78.ts|. Niz je
@@ -172,17 +172,51 @@ vzpostavi povezavo z napravo prek API-ja.
 \newpage
 
 % 4. Aplikacijski programski vmesnik
-\section{Aplikacijski programski vmesnik} \label{api}
-RIPtide API omogoča uporabnikom, da ustvarijo lastno podporo za omrežno
+\section{Aplikacijski programski vmesnik}
+API omogoča uporabnikom, da ustvarijo lastno podporo za omrežno
 opremo, ki je programska oprema še ne podpira. To pomeni, da lahko
 skrbniki omrežij enostavno integrirajo nove naprave v svoje omrežje, ne da
 bi morali čakati, da prodajalec izda uradno podporo.
 
-\subsection{Struktura}
-Vsi pomembni vmesniki in razredi za pisanje Shedov se nahajajo v
-paketu org.riptide.sdk.sheds. ergaergaergaergaerg
-\subsection{Komunikacija z napravami}
-aergaergaergaetrhaerh
+\subsection{Dostop do API-ja}
+Dostop do APIja je mogoč preko SDK knjižnice. Nahaja se v RIPtide
+Maven repozitoriju. Ker so Javanski upravitelji paketov med seboj bolj
+kot ne kompatibilni, je tudi postopek dodajanja knjižnice med njimi
+zelo podoben. Več o projektni strukturi pa v razdelku
+\ref{projektna-struktura}.
+
+\subsection{Struktura API-ja}
+Vsi pomembni vmesniki in razredi za pisanje Shedov se
+nahajajo v paketu org.riptide.sdk.sheds. Paket je deljen na
+podpakete za uporabniški vmesnik, tipe naprav, čarovnike in
+avtentikacijo.
+
+\subsection{Vgrajena orodja}
+API vsebuje uporabna orodja za izdelovanje statusnih strani in
+formularjev, ki se nahajajo v paketu \verb|org.riptide.sdk.sheds.ui|.
+
+\subsection{Komunikacija z napravami} \label{komunikacija-z-napravami}
+Ospredni del s Shedi komunicira preko vmesnikov. Za primer vzemimo
+Telekomov usmerjevalnik. Program iz metapodatkov razbere, da
+naprava tipa router. To pomeni, da mora njen gonilni razred
+implementirati vmesnik \verb|Router| in posledično \verb|Device|,
+saj ga \verb|Router| razširja.
+
+\begin{lstlisting}
+public interface Device {
+	void initialize(String address, Credential credential);
+	TreeMap<String, Tab[]> getPages();
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+public interface Router extends Device {
+	PATWizard patWizard();
+}
+\end{lstlisting}
+
+
+\subsection{Čarovniki}
 \newpage
 
 % 5. Shedi
@@ -191,7 +225,7 @@ V prihodnosti načrtujem omogočiti razširitev tudi drugih funkcionalnosti.
 Zaradi tega sem se za poimenovanje vtičnikov naprav odločil uporabiti
 izraz "shedi" namesto običajnega izraza "plugin".
 
-\subsection{Projektna struktura}
+\subsection{Projektna struktura} \label{projektna-struktura}
 \subsection{Metapodatki}
 \subsection{}
 \newpage
