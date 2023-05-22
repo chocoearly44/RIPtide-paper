@@ -115,7 +115,7 @@ po uporabnikovi želji.
 
 \subsubsection{Shranjevanje podatkov}
 Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
-imenovanem \verb|Workspace|.
+imenovanem \texttt{Workspace}.
 
 \begin{lstlisting}
 @Data
@@ -158,13 +158,14 @@ varnim hranjenjem poverilnic.
 \subsubsection{Nalaganje Shedov}
 Nalaganje shedov poteka v dveh korakih, lociranje Sheda in branje
 metapodatkov. Na uporabnikovem sistemu se nahajajo v obliki JAR datotek v
-dveh mapah, \verb|~/.config/RIPtide/sheds| na NIX sistemih in
-\verb|%UserProfile%\.RIPtide\sheds| na Windows sistemih.
+dveh mapah, \texttt{\textasciitilde/.config/RIPtide/sheds} na NIX sistemih
+in \texttt{\%UserProfile\%\textbackslash\\.RIPtide\textbackslash sheds} na
+Windows sistemih.
 
 \subsubsection{Nalaganje naprav} \label{nalaganje-naprav}
 Ob izbiri naprave, RIPtide iz Shedovih metapodatkov najprej prebere
 njen t.i. model path, ki izgleda približno
-tako: \verb|telekomslovenije.innboxg78.ts|. Niz je sestavljen iz ID-ja
+tako: \texttt{telekomslovenije.innboxg78.ts}. Niz je sestavljen iz ID-ja
 Sheda, ID-ja modela nprave in ID-ja različice modela. Vsi ID-ji so
 edinstveni, kar pomeni, da lahko program najde Shed, v njem poišče model
 naprave, njegovo različico in vzpostavi povezavo z napravo prek API-ja.
@@ -185,14 +186,13 @@ zelo podoben. Več o projektni strukturi pa v razdelku
 \ref{projektna-struktura}.
 
 \subsection{Struktura API-ja}
-Vsi pomembni vmesniki in razredi za pisanje Shedov se
-nahajajo v paketu org.riptide.sdk.sheds. Paket je deljen na
-podpakete za uporabniški vmesnik, tipe naprav, čarovnike in
-avtentikacijo.
+Vsi pomembni vmesniki in razredi za pisanje Shedov se nahajajo v
+paketu \texttt{org\-.riptide.sdk.sheds}. Paket je deljen na podpakete za
+uporabniški vmesnik, tipe naprav, čarovnike in avtentikacijo.
 
 \subsection{Vgrajena orodja}
 API vsebuje uporabna orodja za izdelovanje statusnih strani in
-formularjev, ki se nahajajo v paketu \verb|org.riptide.sdk.sheds.ui|.
+formularjev, ki se nahajajo v paketu \texttt{org.riptide.sdk.sheds.ui}.
 
 \subsection{Komunikacija z napravami} \label{komunikacija-z-napravami}
 Ospredni del s Shedi komunicira preko vmesnikov. Za primer vzemimo
@@ -201,8 +201,8 @@ razred v nov objekt, ki je odgovoren za komunikacijo z napravo
 (postopek je opisan v razdelku \ref{nalaganje-naprav}).
 \\\\
 Program iz metapodatkov razbere, da naprava tipa router. To pomeni,
-da mora njen gonilni razred implementirati vmesnik \verb|Router| in
-posledično \verb|Device|, saj ga \verb|Router| razširja.
+da mora njen gonilni razred implementirati vmesnik \texttt{Router} in
+posledično \texttt{Device}, saj ga \texttt{Router} razširja.
 \newpage
 
 \begin{lstlisting}
@@ -217,14 +217,14 @@ public interface Router extends Device {
 	PATWizard patWizard();
 }
 \end{lstlisting}
-Za tem se kliče metoda \verb|initialize/2|, ki gonilnemu objektu poda
+Za tem se kliče metoda \texttt{initialize/2}, ki gonilnemu objektu poda
 omrežni naslov naprave in poverilnice.
 \\\\
 Nato program od gonilnega objekta zahteva seznam konfiguracijskih strani
-in zavihke z metodo \verb |getPages/1|. Strani so predstavljene s tabelami
-\verb|Tab| objektov, ki so preslikane v nize. Shedi imajo običajno razrede,
-ki implementirajo vmesnik \verb|Tab|, ti se instancirajo in vrnejo v
-metodi. Ospredni del nato z orodnim razredom \verb|ContentRenderer|
+in zavihke z metodo \texttt{getPages/1}. Strani so predstavljene s tabelami
+\texttt{Tab} objektov, ki so preslikane v nize. Shedi imajo običajno razrede,
+ki implementirajo vmesnik \texttt{Tab}, ti se instancirajo in vrnejo v
+metodi. Ospredni del nato z orodnim razredom \texttt{ContentRenderer}
 generira stran, kot je prikazana spodaj.
 
 \begin{center}
@@ -234,6 +234,7 @@ generira stran, kot je prikazana spodaj.
 \newpage
 
 \subsection{Čarovniki}
+
 \newpage
 
 % 5. Shedi
