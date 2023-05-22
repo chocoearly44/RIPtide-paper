@@ -105,9 +105,8 @@ RIPtide API-ja.
 
 % 3. Ospredni del
 \section{Ospredni del}
-Ospredni del je odgovoren za konfiguracijo RIPtide-a, rokovanje z 
-uporabnikovimi napravami ter pripadajočimi poverilnicami in za
-nalaganje Shedov.
+Ospredni del je odgovoren za konfiguracijo RIPtide-a ter rokovanje z 
+uporabnikovimi poverilnicami in napravami.
 
 \subsection{Konfiguracija}
 Uporabnik lahko svoje naprave shrani, in si s tem prihrani čas za morebitno
@@ -148,27 +147,27 @@ enostavno izmenjavo ali prenos.
 Uporabnik lahko vmesnik prilagodi na štiri priložene teme. V prihodnosti
 bo mogoče nalaganje barv iz CSS datoteke po meri.
 
-\subsection{Upravljanje poverilnic in naprav}
+\subsection{Upravljanje poverilnic}
 Za konfiguracijo večine omrežnih naprav je potrebna avtorizacija.
 RIPtide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
 sistemskem keyringu. Poverilnice so ob povezavi na napravo prek API-ja
 podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
-varnim hranjenjem poverilnic. Več o rokovanju z napravami v razdelku
-\ref{komunikacija-z-napravami}.
+varnim hranjenjem poverilnic.
 
-\subsection{Nalaganje Shedov} \label{nalaganje-shedov}
-Nalaganje shedov poteka v treh korakih, lociranje Sheda, branje
-metapodatkov in vzspostavljanje povezave z napravo. Na uporabnikovem
-sistemu se nahajajo v obliki JAR datotek v dveh mapah,
-\verb|~/.config/RIPtide/sheds| na NIX sistemih in
+\subsection{Rokovanje z napravami}
+\subsubsection{Nalaganje Shedov}
+Nalaganje shedov poteka v dveh korakih, lociranje Sheda in branje
+metapodatkov. Na uporabnikovem sistemu se nahajajo v obliki JAR datotek v
+dveh mapah, \verb|~/.config/RIPtide/sheds| na NIX sistemih in
 \verb|%UserProfile%\.RIPtide\sheds| na Windows sistemih.
-\\\\
-Ob izbiri naprave, RIPtide najprej prebere njen t.i. model path, ki
-izgleda približno tako: \verb|telekomslovenije.innboxg78.ts|. Niz je
-sestavljen iz ID-ja Sheda, ID-ja modela nprave in ID-ja različice
-modela. Vsi ID-ji so edinstveni, kar pomeni, da lahko program
-najde Shed, v njem poišče model naprave, njegovo različico in
-vzpostavi povezavo z napravo prek API-ja.
+
+\subsubsection{Nalaganje naprav} \label{nalaganje-naprav}
+Ob izbiri naprave, RIPtide iz Shedovih metapodatkov najprej prebere
+njen t.i. model path, ki izgleda približno
+tako: \verb|telekomslovenije.innboxg78.ts|. Niz je sestavljen iz ID-ja
+Sheda, ID-ja modela nprave in ID-ja različice modela. Vsi ID-ji so
+edinstveni, kar pomeni, da lahko program najde Shed, v njem poišče model
+naprave, njegovo različico in vzpostavi povezavo z napravo prek API-ja.
 \newpage
 
 % 4. Aplikacijski programski vmesnik
@@ -197,10 +196,14 @@ formularjev, ki se nahajajo v paketu \verb|org.riptide.sdk.sheds.ui|.
 
 \subsection{Komunikacija z napravami} \label{komunikacija-z-napravami}
 Ospredni del s Shedi komunicira preko vmesnikov. Za primer vzemimo
-Telekomov usmerjevalnik. Program iz metapodatkov razbere, da
-naprava tipa router. To pomeni, da mora njen gonilni razred
-implementirati vmesnik \verb|Router| in posledično \verb|Device|,
-saj ga \verb|Router| razširja.
+Telekomov usmerjevalnik. Ob izbiri naprave se instancira njen gonilni
+razred v nov objekt, ki je odgovoren za komunikacijo z napravo
+(postopek je opisan v razdelku \ref{nalaganje-naprav}).
+\\\\
+Program iz metapodatkov razbere, da naprava tipa router. To pomeni,
+da mora njen gonilni razred implementirati vmesnik \verb|Router| in
+posledično \verb|Device|, saj ga \verb|Router| razširja.
+\newpage
 
 \begin{lstlisting}
 public interface Device {
@@ -214,11 +217,21 @@ public interface Router extends Device {
 	PATWizard patWizard();
 }
 \end{lstlisting}
+Za tem se kliče metoda \verb|initialize/2|, ki
+gonilnemu objektu poda omrežni naslov naprave in poverilnice.
+\\\\
+Nato program od gonilnega objekta zahteva seznam konfiguracijskih strani
+in zavihke z metodo \verb |getPages/1|. Strani so predstavljene s tabelami
+\verb|Tab| objektov, ki so preslikane v nize. Shedi imajo običajno razrede,
+ki implementirajo vmesnik \verb|Tab|, te se instancirajo in vrnejo v
+metodi. Ospredni del nato z orodnim razredom \verb|ContentRenderer|
+generira stran, kot je prikazana spodaj.
 
-Ob izbiri naprave se ustvari nov objekt, ki je odgovoren za
-komunikacijo z napravo (postopek je opisan v razdelku
-\ref{nalaganje-shedov}). Za tem se kliče metoda \verb|initialize|, ki
-shedu preda omrežni naslov naprave in poverilnice.
+\begin{center}
+	\includegraphics[scale=0.3]{slike/config-window.png}
+	\captionof{figure}{Primer generirane konfiguracijske strani}
+\end{center}
+\newpage
 
 \subsection{Čarovniki}
 \newpage
@@ -229,9 +242,12 @@ V prihodnosti načrtujem omogočiti razširitev tudi drugih funkcionalnosti.
 Zaradi tega sem se za poimenovanje vtičnikov naprav odločil uporabiti
 izraz "shedi" namesto običajnega izraza "plugin".
 
+\subsection{Priprava projekta}
 \subsection{Projektna struktura} \label{projektna-struktura}
-\subsection{Metapodatki}
-\subsection{}
+\subsubsection{Metapodatki}
+\subsubsection{Gonilni razredi}
+\subsubsection{Zavihki}
+\subsection{Izgradnja in uporaba}
 \newpage
 
 % 6. Eksperimentalne funkcije
@@ -242,6 +258,10 @@ stestirati. Te omogočajo naprednim uporabnikom nove možnosti avtomacije
 in pregleda nad omrežjem.
 
 \subsection{Topološki pogled omrežja}
+\newpage
+
+% 7. Zaključek
+\section{Zaključek}
 \newpage
 
 \end{document}
