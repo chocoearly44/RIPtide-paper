@@ -58,19 +58,34 @@
 
 % Povzetek
 \section*{Povzetek}
-V tej seminarski nalogi je opisana programska oprema RIPtide. Je
-odprtokodna in omogoča komurkoli, da s pomočjo RIPtide APIja ustvari
-podporo za svojo omrežno opremo ali uporablja že napisano.\\\\
-\textbf{Ključe besede:} omrežna oprema, API, Java, vtičniki, odptokodna
-programska oprema\\
-
+V tej seminarski nalogoje opisan razvojni proces in delovanje programa
+RIPtide. RIPtide je odprtokodna programska oprema, razvita v jeziku Java,
+namenjena konfiguriranju omrežnih naprav. Odpravlja problem uporabe
+različne programske opreme različnih proizvajalcev za konfiguriranje
+omrežne opreme. Na začetku dokumenta je podan kratek pregled dveh glavnih
+komponent programske opreme: uporabniškega vmesnika (frontend) in
+programskega vmesnika aplikacij (API). V nadaljevanju dokument opisuje
+''Shede'', vtičnike za interakcijo z omrežno opremo. Članek se zaključi z
+opisom razvoja Sheda in obravnava izzive, povezane z njim.
+\\\\
+\textbf{Ključe besede:} konfiguracija omrežij, omrežja, vtičniki, API,
+odprtokodna programska oprema
+\\
 \section*{Abstract}
 \foreignlanguage{english}{
-	This seminar task describes the RIPtide software. It is open-source
-	and allows anyone to create support for their network equipment or
-	use what has already been written, using the RIPtide API.\\\\
-	\textbf{Keywords:} network equipment, API, Java, plugins, open source
-	software
+	The purpose of this paper is to report on the development process and
+	inner workings of RIPtide. RIPtide is an open-source software developed
+	in Java for configuring network devices. It addresses the issue of
+	using multiple software solutions from different manufacturers to
+	configure networks. Initially, the document gives a brief overview of
+	two main components of the software: the frontend and the Application
+	Programming Interface (API). Following that, the document describes
+	''Sheds,'' plugins for interacting with network equipment. The paper
+	concludes by documenting the development of a custom Shed and discusses
+	the associated challenges that can arise during the development.
+	\\\\
+	\textbf{Keywords:} network configuration, networking, plugins, API,
+	open-source software
 }
 \newpage
 
@@ -236,7 +251,14 @@ generira stran, kot je prikazana spodaj.
 \subsection{Čarovniki}
 Program tudi manj naprednim uporabnikom omogoča konfiguracijo njihove
 omrežne opreme. Na konfiguracijski strani za katerokoli omrežno napravo
-se v menijski vrstici nahaja gumb 'Wizards'.  
+se v menijski vrstici nahaja gumb 'Wizards'. Pod njem se glede na tip
+naprave pojavijo različne podmožnosti. Za usmerjevalnike je to zaenkrat
+\textit{Port forwaring wizard}, ki omogoča uporabniku konfiguracijo
+preusmerjanja protokolnih vrat, za stikala pa \textit{VLAN wizard},
+ki omogoča konfiguracijo shranjenih VLAN-ov.
+
+\subsubsection{Implementacija čarovnikov}
+
 \newpage
 
 % 5. Shedi
