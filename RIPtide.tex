@@ -9,26 +9,61 @@
 
 \usepackage{listings}
 \usepackage{color}
+\usepackage{dirtree}
+
+\definecolor{folderbg}{RGB}{124,166,198}
+\definecolor{folderborder}{RGB}{110,144,169}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
 
 \lstset{
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	showstringspaces=false,
+	commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+	morestring=[b]",
+	morestring=[s]{>}{<},
+	morecomment=[s]{<?}{?>},
+	stringstyle=\color{black},
+	identifierstyle=\color{darkblue},
+	keywordstyle=\color{cyan},
+	morekeywords={xmlns,version,type}
+}
+
+\lstdefinestyle{XmlStyle}{
+	language=XML,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	keywordstyle=\color{blue},
+	breaklines=true,
+	tabsize=4
+}
+
+\lstdefinestyle{JavaStyle}{
+	language=Java,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	tabsize=4
 }
 
 \newdateformat{MMYYYYdate}{\monthname[\THEMONTH] \THEYEAR}
@@ -132,7 +167,7 @@ barve vmesnika po uporabnikovi želji.
 Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
 imenovanem \texttt{Workspace}.
 
-\begin{lstlisting}
+\begin{lstlisting}[style=JavaStyle]
 @Data
 public class Workspace implements Serializable {
 	private Theme theme;
@@ -220,14 +255,12 @@ da mora njen gonilni razred implementirati vmesnik \texttt{Router} in
 posledično \texttt{Device}, saj ga \texttt{Router} razširja.
 \newpage
 
-\begin{lstlisting}
+\begin{lstlisting}[style=JavaStyle]
 public interface Device {
 	void initialize(String address, Credential credential);
 	TreeMap<String, Tab[]> getPages();
 }
-\end{lstlisting}
 
-\begin{lstlisting}
 public interface Router extends Device {
 	PATWizard patWizard();
 }
@@ -263,13 +296,59 @@ ki omogoča konfiguracijo shranjenih VLAN-ov.
 
 % 5. Shedi
 \section{Shedi}
+Za komunikacijo z napravami RIPtide preko API-ja uporablja Shede. Shedi
+sami po sebi niso izvršljivi programi, vendar so le zbirka razredov.
+Zapakirani so v JAR datoteke, skupaj z datoteko \texttt{shed.yml}.
+\\\\
 V prihodnosti načrtujem omogočiti razširitev tudi drugih funkcionalnosti.
 Zaradi tega sem se za poimenovanje vtičnikov naprav odločil uporabiti
 izraz ''shedi'' namesto običajnega izraza ''plugin''.
 
 \subsection{Priprava projekta}
+Zaradi olajšanja dela, projekt naredimo s pomočjo upravitelja paketov. V
+tem poglavju bom delal s pomočjo uporavitelja \textit{Apache Maven}. Za
+začetek je potrebno dodati repozitorij in knjižnico. To naredimo v datoteki
+\texttt{pom.xml}.
+
+\begin{lstlisting}[style=XmlStyle]
+<repositories>
+	<repository>
+		<id>repsy</id>
+		<url>https://repo.repsy.io/mvn/riptide/maven</url>
+	</repository>
+</repositories>
+
+<dependencies>
+	<dependency>
+		<groupId>org.riptide</groupId>
+		<artifactId>sdk</artifactId>
+		<version>VERZIJA</version>
+	</dependency>
+</dependencies>
+\end{lstlisting}
+\newpage
+
 \subsection{Projektna struktura} \label{projektna-struktura}
+\begin{dirtree}{%
+.1 NasShed.
+	.2 src.
+		.3 main.
+			.4 java.
+				.5 organizacija.
+					.6 artefakt.
+						.7 GonilniRazred.java.
+			.4 resources.
+				.5 shed.xml.
+	.2 pom.xml.
+}
+\end{dirtree}
+\vspace*{12pt}
+V privzeti paket dodamo gonilne razrede za naše naprave. V
+\texttt{resources} mapo pa datoteko \texttt{shed.yml}, ki bo vsebovala
+metapodatke o Shedu.
+
 \subsubsection{Metapodatki}
+
 \subsubsection{Gonilni razredi}
 \subsubsection{Zavihki}
 \subsection{Izgradnja in uporaba}
