@@ -343,13 +343,41 @@ začetek je potrebno dodati repozitorij in knjižnico. To naredimo v datoteki
 }
 \end{dirtree}
 \vspace*{12pt}
-V privzeti paket dodamo gonilne razrede za naše naprave. V
-\texttt{resources} mapo pa datoteko \texttt{shed.yml}, ki bo vsebovala
+V privzeti paket (oziroma podpakete) dodamo gonilne razrede za naše naprave.
+V \texttt{resources} mapo pa datoteko \texttt{shed.yml}, ki bo vsebovala
 metapodatke o Shedu.
 
 \subsubsection{Metapodatki}
+Metapodatki vsebujejo pomembne podatke o Shedu, ki so nujni za delovanje.
+
+\begin{lstlisting}[style=XmlStyle]
+name: "Telekom Slovenije Shed"
+id: "telekomslovenije"
+version: "1.0"
+api_level: "1.0"
+authors:
+	- "chocoearly44"
+routers:
+	- name: "InnboxG78"
+	id: "innboxg78"
+	flavours:
+		- name: "Telekom Slovenije"
+		id: "ts"
+		handler: "org.riptide.ts.Main"
+switches:
+\end{lstlisting}
+Zaglavje vsebuje ime Sheda, njegov ID, verzijo, avtorje in podprto verzijo
+API-ja, za katero je bil zgrajen. Pod zaglavjem sledijo razdelki s tipi
+naprav. V njih so shranjene podprte naprave, ki vsebujejo imena, ID-je in
+vrste. Vrste vsebujejo gonilne razrede, saj ima naprava lahko različne
+funkcionalnosti, glede na nameščeno programsko opremo. Tako zagotovimo
+da lahko Shed podpira isto napravo, ne glede na distributorja (za primer
+InnboxG78 usmerjevalnik, ki ga distribuirata tako Telekom Slovenije, kot
+tudi T2).
 
 \subsubsection{Gonilni razredi}
+
+
 \subsubsection{Zavihki}
 \subsection{Izgradnja in uporaba}
 \newpage
