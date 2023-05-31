@@ -100,8 +100,8 @@ različne programske opreme različnih proizvajalcev za konfiguriranje
 omrežne opreme. Na začetku dokumenta je podan kratek pregled dveh glavnih
 komponent programske opreme: uporabniškega vmesnika (frontend) in
 programskega vmesnika aplikacij (API). V nadaljevanju dokument opisuje
-''Shede'', vtičnike za interakcijo z omrežno opremo. Članek se zaključi z
-opisom razvoja Sheda in obravnava izzive, povezane z njim.
+''Shede'', vtičnike za interakcijo z omrežno opremo. Seminarksa naloga se
+zaključi z opisom razvoja Sheda in obravnava izzive, povezane z njim.
 \\\\
 \textbf{Ključe besede:} konfiguracija omrežij, omrežja, vtičniki, API,
 odprtokodna programska oprema
@@ -205,7 +205,7 @@ podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
 varnim hranjenjem poverilnic.
 
 \subsection{Rokovanje z napravami}
-\subsubsection{Nalaganje Shedov}
+\subsubsection{Nalaganje Shedov} \label{nalaganje-shedov}
 Nalaganje shedov poteka v dveh korakih, lociranje Sheda in branje
 metapodatkov. Na uporabnikovem sistemu se nahajajo v obliki JAR datotek v
 dveh mapah, \texttt{\textasciitilde/.config/RIPtide/sheds} na NIX sistemih
@@ -258,7 +258,7 @@ posledično \texttt{Device}, saj ga \texttt{Router} razširja.
 \begin{lstlisting}[style=JavaStyle]
 public interface Device {
 	void initialize(String address, Credential credential);
-	TreeMap<String, Tab[]> getPages();
+	LinkedHashMap<String, Tab[]> getPages();
 }
 
 public interface Router extends Device {
@@ -269,11 +269,9 @@ Za tem se kliče metoda \texttt{initialize/2}, ki gonilnemu objektu poda
 omrežni naslov naprave in poverilnice.
 \\\\
 Nato program od gonilnega objekta zahteva seznam konfiguracijskih strani
-in zavihke z metodo \texttt{getPages/1}. Strani so predstavljene s tabelami
-\texttt{Tab} objektov, ki so preslikane v nize. Shedi imajo običajno razrede,
-ki implementirajo vmesnik \texttt{Tab}, ti se instancirajo in vrnejo v
-metodi. Ospredni del nato z orodnim razredom \texttt{ContentRenderer}
-generira stran, kot je prikazana spodaj.
+in zavihke z metodo \texttt{getPages/0} (glej \ref{konfiguracijske-strani}).
+Ospredni del jih z orodnim razredom \texttt{ContentRenderer} generira, tako
+kot primer spodaj.
 
 \begin{center}
 	\includegraphics[scale=0.28]{slike/config-window.png}
@@ -286,12 +284,13 @@ Program tudi manj naprednim uporabnikom omogoča konfiguracijo njihove
 omrežne opreme. Na konfiguracijski strani za katerokoli omrežno napravo
 se v menijski vrstici nahaja gumb ''Wizards''. Pod njem se glede na tip
 naprave pojavijo različne podmožnosti. Za usmerjevalnike je to zaenkrat
-\textit{Port forwaring wizard}, ki omogoča uporabniku konfiguracijo
-preusmerjanja protokolnih vrat, za stikala pa \textit{VLAN wizard},
-ki omogoča konfiguracijo shranjenih VLAN-ov.
+\textit{Port forwaring wizard}, ki omogoča uporabniku konfiguracijo NAT-a,
+za stikala pa \textit{VLAN wizard}, ki omogoča konfiguracijo VLAN-ov.
 
-\subsubsection{Implementacija čarovnikov}
-
+\begin{center}
+	\includegraphics[scale=0.56]{slike/pat-wizard.png}
+	\captionof{figure}{Čarovnik za konfiguracijo NAT-a}
+\end{center}
 \newpage
 
 % 5. Shedi
@@ -348,7 +347,8 @@ V \texttt{resources} mapo pa datoteko \texttt{shed.yml}, ki bo vsebovala
 metapodatke o Shedu.
 
 \subsubsection{Metapodatki}
-Metapodatki vsebujejo pomembne podatke o Shedu, ki so nujni za delovanje.
+Metapodatki so shranjeni v datoteki \texttt{shed.yml} in vsebujejo pomembne
+informacije o Shedu, ki so nujne za delovanje.
 
 \begin{lstlisting}[style=XmlStyle]
 name: "Telekom Slovenije Shed"
@@ -369,17 +369,45 @@ switches:
 Zaglavje vsebuje ime Sheda, njegov ID, verzijo, avtorje in podprto verzijo
 API-ja, za katero je bil zgrajen. Pod zaglavjem sledijo razdelki s tipi
 naprav. V njih so shranjene podprte naprave, ki vsebujejo imena, ID-je in
-vrste. Vrste vsebujejo gonilne razrede, saj ima naprava lahko različne
-funkcionalnosti, glede na nameščeno programsko opremo. Tako zagotovimo
-da lahko Shed podpira isto napravo, ne glede na distributorja (za primer
-InnboxG78 usmerjevalnik, ki ga distribuirata tako Telekom Slovenije, kot
-tudi T2).
+vrste. Vrste vsebujejo pot do gonilnih razredov, saj ima naprava lahko
+različne funkcionalnosti, glede na nameščeno programsko opremo. Tako
+zagotovimo da lahko isti Shed podpira isto napravo, ne glede na
+distributerja (za primer InnboxG78 usmerjevalnik, katerega distribuirata
+tako Telekom Slovenije, kot tudi T2).
 
 \subsubsection{Gonilni razredi}
+Gonilni razredi predstavljajo instance povezave z napravami. Za pravilno
+delovanje, morajo implementirati enega izmed v naprej narejenih vmesnikov
+(npr. \texttt{Router} ali \texttt{Switch}), zaradi dedovanja pa posledično
+implementirajo tudi \texttt{Device} vmesnik. Postopek vzpostavitve povezave
+pa je opisan v razdelku \ref{komunikacija-z-napravami}.
 
+\subsubsection{Konfiguracijske strani} \label{konfiguracijske-strani}
+Konfiguracijske strani so v Shedu predstavljene z razredi, ki
+implementirajo \texttt{Tab} vmesnik.
 
-\subsubsection{Zavihki}
-\subsection{Izgradnja in uporaba}
+\begin{lstlisting}[style=JavaStyle]
+public interface Tab {
+	String getTitle();
+	UIComponent rootComponent();
+}
+\end{lstlisting}
+Metoda \texttt{getTitle/0} vrača naslov zavihka, metoda
+\texttt{rootComponent/0} pa komponento uporabniškega vmesnika, ki se bo
+pokazala v zavihku (npr. tabela, kontejner, formular, ...).
+\\\\
+Objekti teh zavihkov so nato zbrani v tabelo, katera se preslika v niz s
+pomočjo razreda \texttt{LinkedHashMap}. Taka preslikava bo predstavljala
+konfiguracijko stran, ki jo lahko odpremo iz stranske vrstice. Te
+preslikave nato zberemo in jih vrnemo v metodi \texttt{getPages/0}.
+\newpage
+
+\subsection{Izgradnja}
+Zadnji korak razvoja Sheda je izgradnja. Ko projekt gradimo, moramo paziti,
+da v končno JAR datoteko vključnimo morebitne knjižnice, ki smo jih
+uporabili (npr. za komunikacijo preko SSH-ja). Izgrajeno JAR datoteko nato
+uporabniki naložijo v mapo kjer imajo shranjene svoje Shede
+(glej \ref{nalaganje-shedov}).
 \newpage
 
 % 6. Eksperimentalne funkcije
@@ -390,6 +418,13 @@ stestirati. Te omogočajo naprednim uporabnikom nove možnosti avtomacije
 in pregleda nad omrežjem.
 
 \subsection{Topološki pogled omrežja}
+Ta funkcionalnost omogoča naprednim uporabnikom pogled logične topologije
+omrežij, podoben, kot pri Ciscovem Packet Tracerju. Prikazane naprave
+lahko uporabniki povežejo med sabo oziroma jih dvokliknejo za hitero
+konfiguracijo.
+
+\subsection{Integracija z Luo}
+
 \newpage
 
 % 7. Zaključek
