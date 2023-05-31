@@ -158,12 +158,21 @@ RIPtide API-ja.
 Ospredni del je odgovoren za konfiguracijo RIPtide-a ter rokovanje z 
 uporabnikovimi poverilnicami in napravami.
 
+\subsection{Uporabniški vmesnik}
+Za izgradnjo uporabniškega vmesnika sem uporabil knjižnico JavaFX. Omogoča
+hitro izdelavo in načrtovanje, skupaj s knjižnico FXML. Za stil pa sem
+uporabil knjižnico AtlantaFX, ki naredi vmesnik minimalističen in vključuje
+štiri že narejene stilske datoteke.
+\\\\
+Glavno okno za konfiguracijo naprav temelji na principu MDI (ang.
+multiple-document interface). Glavna prednost MDI-ja je več podoken znotraj
+glavnega okna, kar uporabniku omogoča večopravilnost.
+
 \subsection{Konfiguracija}
 Uporabnik lahko svoje naprave shrani, in si s tem prihrani čas za
 morebitno kasnejšo konfiguracijo. Poleg tega RIPtide omogoča spremembo
 barve vmesnika po uporabnikovi želji.
-
-\subsubsection{Shranjevanje podatkov}
+\\\\
 Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
 imenovanem \texttt{Workspace}.
 
@@ -192,10 +201,6 @@ na uproabnikov sistem. Datotek je lahko več, kar omogoča prilagoditev
 vmesnika za različna okolja (npr. posebej za domačo in poslovno rabo).
 Workspace datoteke so shranjene v JSON formatu, kar uporabnikom omogoča
 enostavno izmenjavo ali prenos.
-
-\subsubsection{Barve vmesnika}
-Uporabnik lahko vmesnik prilagodi na štiri priložene teme. V prihodnosti
-bo mogoče nalaganje barv iz CSS datoteke po meri.
 
 \subsection{Upravljanje poverilnic}
 Za konfiguracijo večine omrežnih naprav je potrebna avtorizacija.
@@ -400,7 +405,6 @@ Objekti teh zavihkov so nato zbrani v tabelo, katera se preslika v niz s
 pomočjo razreda \texttt{LinkedHashMap}. Taka preslikava bo predstavljala
 konfiguracijko stran, ki jo lahko odpremo iz stranske vrstice. Te
 preslikave nato zberemo in jih vrnemo v metodi \texttt{getPages/0}.
-\newpage
 
 \subsection{Izgradnja}
 Zadnji korak razvoja Sheda je izgradnja. Ko projekt gradimo, moramo paziti,
@@ -424,11 +428,31 @@ lahko uporabniki povežejo med sabo oziroma jih dvokliknejo za hitero
 konfiguracijo.
 
 \subsection{Integracija z Luo}
-
+RIPtide ima vgrajeno Lua izvajalno okolje. Lua je preprost programski jezik,
+s katerim lahko napredni uporabniki pišejo skripte. Te skripte omogočajo
+avtomatizacijo konfiguracije omrežja in s tem prihranijo čas uporabnikom.
 \newpage
 
 % 7. Zaključek
 \section{Zaključek}
+V tej seminarski nalogi sem opisal izdelavo programske opreme RIPtide, ki
+sem jo razvil, saj sem potreboval enostavno in stabilno rešitev za
+konfiguracijo omrežij. S svojim pristopom "vtičnikov (Shedov) omogoča
+uporabnikom konfiguracijo različne omrežne opreme na enostaven način.
+Poleg tega omogoča shranjevanje naprav in poverilnic ter prilagajanje
+vmesnika glede na uporabnikove želje.
+\\\\
+Z uporabo RIPtide-a lahko skrbniki omrežij enostavno integrirajo nove
+naprave v svoje omrežje, ne da bi morali čakati na uradno podporo
+proizvajalca. S svojim aplikacijskim programskim vmesnikom (API) omogoča
+razvijalcem ustvarjanje lastne podpore za omrežno opremo, ki je programska
+oprema še ne podpira.
+\\\\
+V prihodnosti se načrtuje širitev funkcionalnosti RIPtide-a, da bi
+omogočili še večjo prilagodljivost in podporo različnim potrebam
+uporabnikov. Z njegovimi zmožnostmi konfiguracije omrežij na enem mestu ter
+uporabniku prijaznim vmesnikom RIPtide zagotavlja izboljšano učinkovitost
+in stabilnost pri upravljanju omrežij.
 \newpage
 
 \end{document}
