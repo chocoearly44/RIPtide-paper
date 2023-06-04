@@ -67,7 +67,7 @@
 }
 
 \newdateformat{MMYYYYdate}{\monthname[\THEMONTH] \THEYEAR}
-\title{RIPtide - Univerzalno orodje za konfiguracijo omrežij}
+\title{Riptide - Univerzalno orodje za konfiguracijo omrežij}
 \author{Jurij Fortuna, G 3. a}
 \date{\MMYYYYdate\today}
 
@@ -80,12 +80,12 @@
 	\vspace{\fill}
 	Seminarska naloga pri predmetu računalništvo
 
-	\Huge{RIPtide - Univerzalno orodje za konfiguracijo omrežij}
+	\Huge{Riptide - Univerzalno orodje za konfiguracijo omrežij}
 
 	\normalsize
 	\vspace{\fill}
 
-	Mentor: Marko Kastelic, prof. \hfill Avtor: Jurij Fortuna , G 3. a\\
+	Mentor: Marko Kastelic \hfill Avtor: Jurij Fortuna, G 3. a\\
 	\null
 	Ljubljana, \MMYYYYdate\today
 \end{center}
@@ -93,23 +93,21 @@
 
 % Povzetek
 \section*{Povzetek}
-V tej seminarski nalogoje opisan razvojni proces in delovanje programa
-RIPtide. RIPtide je odprtokodna programska oprema, razvita v jeziku Java,
-namenjena konfiguriranju omrežnih naprav. Odpravlja problem uporabe
-različne programske opreme različnih proizvajalcev za konfiguriranje
-omrežne opreme. Na začetku dokumenta je podan kratek pregled dveh glavnih
-komponent programske opreme: uporabniškega vmesnika (frontend) in
+Naloga opisuje razvojni proces in delovanje programa Riptide. Riptide je
+odprtokodna programska oprema, razvita v jeziku Java, namenjena
+nastavitvi omrežnih naprav. Na začetku naloge je podan kratek pregled dveh
+glavnih komponent programske opreme: uporabniškega vmesnika (frontend) in
 programskega vmesnika aplikacij (API). V nadaljevanju dokument opisuje
-''Shede'', vtičnike za interakcijo z omrežno opremo. Seminarksa naloga se
-zaključi z opisom razvoja Sheda in obravnava izzive, povezane z njim.
+''Shede'', vtičnike za interakcijo z omrežno opremo. Naloga se
+zaključi s primerom razvoja Sheda in obravnava izzive, povezane z njim.
 \\\\
-\textbf{Ključe besede:} konfiguracija omrežij, omrežja, vtičniki, API,
+\textbf{Ključe besede:} omrežja, omrežne naprave, nastavitev omrežij, API,
 odprtokodna programska oprema
 \\
 \section*{Abstract}
 \foreignlanguage{english}{
 	The purpose of this paper is to report on the development process and
-	inner workings of RIPtide. RIPtide is an open-source software developed
+	inner workings of Riptide. Riptide is an open-source software developed
 	in Java for configuring network devices. It addresses the issue of
 	using multiple software solutions from different manufacturers to
 	configure networks. Initially, the document gives a brief overview of
@@ -119,7 +117,7 @@ odprtokodna programska oprema
 	concludes by documenting the development of a custom Shed and discusses
 	the associated challenges that can arise during the development.
 	\\\\
-	\textbf{Keywords:} network configuration, networking, plugins, API,
+	\textbf{Keywords:} networking, network devices, network setup, API,
 	open-source software
 }
 \newpage
@@ -130,32 +128,54 @@ odprtokodna programska oprema
 
 % 1. Uvod
 \section{Uvod}
-Ideja za razvoj RIPtide-a se je pojavila, ko sem bil med konfiguracijo
-domačega omrežja prisiljen uporabljati tri različne programske opreme,
+Ideja za razvoj Riptide-a se je pojavila, ko sem bil med konfiguracijo
+domačega omrežja prisiljen uporabljati tri vrste programske opreme,
 različnih proizvajalcev. Med sabo so se nemalo razlikovale in so bile
-po večini nestabilne. Zato sem se odločil razviti generično programsko
-opremo za konfiguracijo omrežij. Deluje na principu
-“vtičnikov” (t.i. Shedov) za posamezne kose omrežne opreme.\\\\\\
+po večini nestabilne. Rezultat naloge je programska oprema Riptide.
+Deluje na principu “vtičnikov” (t.i. Shedov) za posamezne kose omrežne
+opreme, kar uporabnikom omogoča, da iz enega programa nastavljajo celotno
+svoje omrežje. Programska oprema je odprtokodna in brezplačna, kar omogoča
+večjo dostopnost uporabnikom.
+\\\\
 
 \begin{center}
-	\includegraphics[scale=0.5]{slike/telekom.png}
-	\captionof{figure}{Primer konfiguracijske strani za usmerjevalnike Telekoma Slovenije}
+	\includegraphics[scale=0.24]{slike/config.png}
+	\captionof{figure}{Primeri uporabljene programske opreme}
 \end{center}
 \newpage
 
 % 2. Tehnologije
 \section{Uporabljene tehnologije}
-Tako Shedi, kot tudi RIPtide so napisani v Javi. Java omogoča dinamično
+Tako Shedi, kot tudi Riptide so napisani v Javi. Java omogoča dinamično
 nalaganje modulov ob zagonu navideznega stroja, tudi iz zapakiranih JAR
-datotek. Sam RIPtide je zgrajen iz dveh glavnih delov: osprednega dela 
-in aplikacijskega programskega vmesnika (v nadaljevanju API).
-Poleg tega velja omeniti Shede, ki jih lahko razvije kdorkoli z uporabo
-RIPtide API-ja.
+datotek. Aplikacijo sestavljajo trije deli: Ospredni del, API in pa Shedi. Med
+sabo so to ločeni deli in razvoj poteka na vsakem posamezno. V nadaljevanju
+naloge bo vsak bolj podrobneje opisan.
+
+\subsection{Ospredni del}
+Ospredni del je del, s katerim uporabnik upravlja. Skrbi za prikaz podatkov
+in vnašanje konfiguracije. Skrbi tudi za shranjevanje konfiguracije in
+uporavljanje z uporabnikovimi podatki.
+
+\subsection{Aplikacijski programski vmesnik}
+Aplikacijski programski vmesnik (v nadaljevanju API) deluje kot most med
+osprednim delom in Shedi. Z njim lahko preko vmesnikov ospredni del podatke
+pošilja Shedom.
+
+\subsection{Shedi}
+Shedi so vtičniki, oziroma gonilniki, ki skrbijo za komunikacijo z 
+napravami. Praviloma jih razvija skupnost in so odprtokodni. Distribuirani
+in nameščeni pa na uporabnikov sistem, kot JAR datoteke.
+
+\begin{center}
+	\includegraphics[scale=0.5]{slike/zgradba.png}
+	\captionof{figure}{Diagram delovanja}
+\end{center}
 \newpage
 
 % 3. Ospredni del
 \section{Ospredni del}
-Ospredni del je odgovoren za konfiguracijo RIPtide-a ter rokovanje z 
+Ospredni del je odgovoren za konfiguracijo Riptide-a ter rokovanje z 
 uporabnikovimi poverilnicami in napravami.
 
 \subsection{Uporabniški vmesnik}
@@ -164,13 +184,13 @@ hitro izdelavo in načrtovanje, skupaj s knjižnico FXML. Za stil pa sem
 uporabil knjižnico AtlantaFX, ki naredi vmesnik minimalističen in vključuje
 štiri že narejene stilske datoteke.
 \\\\
-Glavno okno za konfiguracijo naprav temelji na principu MDI (ang.
-multiple-document interface). Glavna prednost MDI-ja je več podoken znotraj
-glavnega okna, kar uporabniku omogoča večopravilnost.
+Glavno okno za konfiguracijo naprav je zasnovano kot MDI (ang.
+multiple-document interface). Glavna prednost MDI-ja je možnost rabe večih
+podoken znotraj glavnega okna, kar uporabniku omogoča večopravilnost.
 
 \subsection{Konfiguracija}
 Uporabnik lahko svoje naprave shrani, in si s tem prihrani čas za
-morebitno kasnejšo konfiguracijo. Poleg tega RIPtide omogoča spremembo
+morebitno kasnejšo konfiguracijo. Poleg tega Riptide omogoča spremembo
 barve vmesnika po uporabnikovi želji.
 \\\\
 Okoljske spremenljivke, naprave in poverilnice so zapisanje v objektu
@@ -204,7 +224,7 @@ enostavno izmenjavo ali prenos.
 
 \subsection{Upravljanje poverilnic}
 Za konfiguracijo večine omrežnih naprav je potrebna avtorizacija.
-RIPtide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
+Riptide uporabnikom omogoča varno shranjevanje poverilnic na njihovem
 sistemskem keyringu. Poverilnice so ob povezavi na napravo prek API-ja
 podani Shedu, kar pomeni, da se razvijalci teh ne rabijo ukvarjati z
 varnim hranjenjem poverilnic.
@@ -213,12 +233,12 @@ varnim hranjenjem poverilnic.
 \subsubsection{Nalaganje Shedov} \label{nalaganje-shedov}
 Nalaganje shedov poteka v dveh korakih, lociranje Sheda in branje
 metapodatkov. Na uporabnikovem sistemu se nahajajo v obliki JAR datotek v
-dveh mapah, \texttt{\textasciitilde/.config/RIPtide/sheds} na NIX sistemih
-in \texttt{\%UserProfile\%\textbackslash\\.RIPtide\textbackslash sheds} na
+dveh mapah, \texttt{\textasciitilde/.config/Riptide/sheds} na *NIX sistemih
+in \texttt{\%UserProfile\%\textbackslash\\.Riptide\textbackslash sheds} na
 Windows sistemih.
 
 \subsubsection{Nalaganje naprav} \label{nalaganje-naprav}
-Ob izbiri naprave, RIPtide iz Shedovih metapodatkov najprej prebere
+Ob izbiri naprave, Riptide iz Shedovih metapodatkov najprej prebere
 njen t.i. model path, ki izgleda približno
 tako: \texttt{telekomslovenije.innboxg78.ts}. Niz je sestavljen iz ID-ja
 Sheda, ID-ja modela nprave in ID-ja različice modela. Vsi ID-ji so
@@ -234,11 +254,11 @@ skrbniki omrežij enostavno integrirajo nove naprave v svoje omrežje, ne da
 bi morali čakati, da prodajalec izda uradno podporo.
 
 \subsection{Dostop do API-ja}
-Dostop do APIja je mogoč preko SDK knjižnice. Nahaja se v RIPtide
+Dostop do APIja je mogoč preko SDK knjižnice. Nahaja se v Riptide
 Maven repozitoriju. Ker so Javanski upravitelji paketov med seboj bolj
 kot ne kompatibilni, je tudi postopek dodajanja knjižnice med njimi
-zelo podoben. Več o projektni strukturi pa v razdelku
-\ref{projektna-struktura}.
+zelo podoben. Več o strukturi projekta pa v razdelku
+\ref{struktura-projekta}.
 
 \subsection{Struktura API-ja}
 Vsi pomembni vmesniki in razredi za pisanje Shedov se nahajajo v
@@ -300,19 +320,18 @@ za stikala pa \textit{VLAN wizard}, ki omogoča konfiguracijo VLAN-ov.
 
 % 5. Shedi
 \section{Shedi}
-Za komunikacijo z napravami RIPtide preko API-ja uporablja Shede. Shedi
-sami po sebi niso izvršljivi programi, vendar so le zbirka razredov.
-Zapakirani so v JAR datoteke, skupaj z datoteko \texttt{shed.yml}.
+Shedi so vtičniki, ki skrbijo za komunikacijo z napravami. Sami po sebi
+niso izvršljivi programi, vendar so le zbirka razredov. Zapakirani so v
+JAR datoteke, skupaj z datoteko \texttt{shed.yml}.
 \\\\
 V prihodnosti načrtujem omogočiti razširitev tudi drugih funkcionalnosti.
 Zaradi tega sem se za poimenovanje vtičnikov naprav odločil uporabiti
 izraz ''shedi'' namesto običajnega izraza ''plugin''.
 
 \subsection{Priprava projekta}
-Zaradi olajšanja dela, projekt naredimo s pomočjo upravitelja paketov. V
-tem poglavju bom delal s pomočjo uporavitelja \textit{Apache Maven}. Za
-začetek je potrebno dodati repozitorij in knjižnico. To naredimo v datoteki
-\texttt{pom.xml}.
+Pri pripravi projekta je bil uporabljen standardni javanski upravitelj
+paketov \textit{Apache Maven}. Za začetek je potrebno dodati repozitorij in
+knjižnico. To naredimo v datoteki \texttt{pom.xml}.
 
 \begin{lstlisting}[style=XmlStyle]
 <repositories>
@@ -332,7 +351,7 @@ začetek je potrebno dodati repozitorij in knjižnico. To naredimo v datoteki
 \end{lstlisting}
 \newpage
 
-\subsection{Projektna struktura} \label{projektna-struktura}
+\subsection{Struktura projekta} \label{struktura-projekta}
 \begin{dirtree}{%
 .1 NasShed.
 	.2 src.
@@ -352,8 +371,9 @@ V \texttt{resources} mapo pa datoteko \texttt{shed.yml}, ki bo vsebovala
 metapodatke o Shedu.
 
 \subsubsection{Metapodatki}
-Metapodatki so shranjeni v datoteki \texttt{shed.yml} in vsebujejo pomembne
-informacije o Shedu, ki so nujne za delovanje.
+Metapodatki vsebujejo pomembne informacije o Shedu. Vključujejo unikatne
+identifikatorje, ki so nujni za delovanje. Metapodatki so shranjeni v
+datoteki \texttt{shed.yml}.
 
 \begin{lstlisting}[style=XmlStyle]
 name: "Telekom Slovenije Shed"
@@ -381,11 +401,12 @@ distributerja (za primer InnboxG78 usmerjevalnik, katerega distribuirata
 tako Telekom Slovenije, kot tudi T2).
 
 \subsubsection{Gonilni razredi}
-Gonilni razredi predstavljajo instance povezave z napravami. Za pravilno
-delovanje, morajo implementirati enega izmed v naprej narejenih vmesnikov
-(npr. \texttt{Router} ali \texttt{Switch}), zaradi dedovanja pa posledično
-implementirajo tudi \texttt{Device} vmesnik. Postopek vzpostavitve povezave
-pa je opisan v razdelku \ref{komunikacija-z-napravami}.
+Gonilni razredi komunicirajo z napravami. Za pravilno delovanje, morajo
+implementirati enega izmed v naprej narejenih vmesnikov (npr.
+\texttt{Router} ali \texttt{Switch}), zaradi dedovanja pa posledično
+implementirajo tudi \texttt{Device} vmesnik. V njih so definirane metode
+za inicializacijo povezave, ipd. Postopek vzpostavitve povezave pa je
+opisan v razdelku \ref{komunikacija-z-napravami}.
 
 \subsubsection{Konfiguracijske strani} \label{konfiguracijske-strani}
 Konfiguracijske strani so v Shedu predstavljene z razredi, ki
@@ -416,7 +437,7 @@ uporabniki naložijo v mapo kjer imajo shranjene svoje Shede
 
 % 6. Eksperimentalne funkcije
 \section{Eksperimentalne funkcije}
-RIPtide je opremljen z nekaj novimi eksperimentalnimi funkcijami,
+Riptide je opremljen z nekaj novimi eksperimentalnimi funkcijami,
 ki pa jih zaradi pomanjkanja časa nisem uspel povsem dokončati in
 stestirati. Te omogočajo naprednim uporabnikom nove možnosti avtomacije
 in pregleda nad omrežjem.
@@ -428,31 +449,63 @@ lahko uporabniki povežejo med sabo oziroma jih dvokliknejo za hitero
 konfiguracijo.
 
 \subsection{Integracija z Luo}
-RIPtide ima vgrajeno Lua izvajalno okolje. Lua je preprost programski jezik,
+Riptide ima vgrajeno Lua izvajalno okolje. Lua je preprost programski jezik,
 s katerim lahko napredni uporabniki pišejo skripte. Te skripte omogočajo
 avtomatizacijo konfiguracije omrežja in s tem prihranijo čas uporabnikom.
 \newpage
 
 % 7. Zaključek
 \section{Zaključek}
-V tej seminarski nalogi sem opisal izdelavo programske opreme RIPtide, ki
-sem jo razvil, saj sem potreboval enostavno in stabilno rešitev za
-konfiguracijo omrežij. S svojim pristopom "vtičnikov (Shedov) omogoča
-uporabnikom konfiguracijo različne omrežne opreme na enostaven način.
-Poleg tega omogoča shranjevanje naprav in poverilnic ter prilagajanje
-vmesnika glede na uporabnikove želje.
+Dobljeni rezultat predstavlja enostavno in stabilno rešitev za nastavitev
+omrežij. Z rabo ''vtičnikov'' (Shedov) omogoča uporabnikom konfiguracijo
+različne omrežne opreme na enostaven način.
 \\\\
-Z uporabo RIPtide-a lahko skrbniki omrežij enostavno integrirajo nove
+Z uporabo Riptide-a lahko skrbiki omrežij enostavno integrirajo nove
 naprave v svoje omrežje, ne da bi morali čakati na uradno podporo
 proizvajalca. S svojim aplikacijskim programskim vmesnikom (API) omogoča
 razvijalcem ustvarjanje lastne podpore za omrežno opremo, ki je programska
 oprema še ne podpira.
-\\\\
-V prihodnosti se načrtuje širitev funkcionalnosti RIPtide-a, da bi
-omogočili še večjo prilagodljivost in podporo različnim potrebam
-uporabnikov. Z njegovimi zmožnostmi konfiguracije omrežij na enem mestu ter
-uporabniku prijaznim vmesnikom RIPtide zagotavlja izboljšano učinkovitost
-in stabilnost pri upravljanju omrežij.
 \newpage
+
+% 8. Viri in literatura
+\section{Viri in literatura}
+lua. \textit{Lua: about}, 2023, spletni naslov: https://www.lua.org/about
+.html (26. 5. 2023)
+\\\\
+mkpaz. \textit{AtlantaFX Overview}, 2023, spletni naslov: https://mkpaz.
+github.io/atlantafx (31. 12. 2022)
+\\\\
+OpenJFX. \textit{Getting Started with JavaFX}, spletni naslov: https://
+openjfx.io/openjfx-docs (31. 12. 2022)
+\\\\
+Oracle. \textit{URLClassLoader (Java SE 20 \& JDK 20)}, 1998, spletni
+naslov: https://docs.oracle.com/en/java/javase/20/docs/api/java.base/java/
+net/URLClassLoader.html (3. 3. 2023)
+\newpage
+
+\begin{samepage}
+	\thispagestyle{empty}
+	\section*{Priloge}
+	\textbf{Priloga 1}\\
+	Koda za ospredni del: https://github.com/riptideconfig/Riptide
+	\\\\
+	\textbf{Priloga 2}\\
+	Koda za SDK: https://github.com/riptideconfig/SDK
+	\\\\
+	\textbf{Priloga 3}\\
+	Koda za Shed Telekoma Slovenije: https://github.com/riptideconfig/TelekomShed
+\end{samepage}
+\newpage
+
+% Izjava o avtorstvu
+\begin{samepage}
+	\thispagestyle{empty}
+	\section*{Izjava o avtorstvu}
+	Izjavljam, da je seminarska naloga v celoti moje avtorsko delo, ki sem
+	gaizdelal samostojno s pomočjo navedene literature in pod vodstvom
+	mentorja.
+	\\\\
+	\MMYYYYdate\today \hfill Jurij Fortuna
+\end{samepage}
 
 \end{document}
